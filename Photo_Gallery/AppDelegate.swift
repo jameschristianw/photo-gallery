@@ -33,8 +33,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // Core Data extension for persistance container
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "PhotoDataModel")
+    lazy var persistentContainer: NSPersistentCloudKitContainer = {
+        let container = NSPersistentCloudKitContainer(name: "PhotoDataModel")
+        
+        // turn on persistent history tracking
+        let description = container.persistentStoreDescriptions.first
+        description?.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+        
+        // turn on remote change notifications
+        let remoteChangeKey = "NSPersistentStoreRemoteChangeNotificationOptionKey"
+        description?.setOption(true as NSNumber, forKey: remoteChangeKey)
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        
         container.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Unable to load persistent stores: \(error)")

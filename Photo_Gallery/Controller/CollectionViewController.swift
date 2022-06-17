@@ -18,6 +18,7 @@ class CollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupObserverFotNotification()
         setupData()
         setUpCollectionView()
     }
@@ -31,6 +32,21 @@ class CollectionViewController: UICollectionViewController {
         let photosFromCoreData = photoDAO.fetchPhotos()
         photos.insert(contentsOf: photosFromCoreData, at: photos.count)
     }
+    
+    private func setupObserverFotNotification () {
+        let persistentContainer = photoDAO.coreDataHelper.container
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchChanges), name: .NSPersistentStoreRemoteChange, object: persistentContainer?.persistentStoreCoordinator)
+    }
+    
+    @objc
+    func fetchChanges() {
+        print("Just received an NSPersistentStoreRemoteChange notification")
+        DispatchQueue.main.async {
+            self.setupData()
+            self.collectionView.reloadData()
+        }
+    }
+    
     
     private func setUpCollectionView() {
         let layout = UICollectionViewFlowLayout()

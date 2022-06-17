@@ -11,13 +11,13 @@ import CoreData
 
 class CoreDataHelper {
     
-    let container: NSPersistentContainer!
+    let container: NSPersistentCloudKitContainer!
     let viewContext: NSManagedObjectContext!
     
     // Initalize container and context
     init() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        container = appDelegate?.persistentContainer
+        container = appDelegate?.persistentContainer as? NSPersistentCloudKitContainer
         viewContext = container.viewContext
     }
     
